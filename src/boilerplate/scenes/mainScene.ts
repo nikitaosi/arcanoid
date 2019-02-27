@@ -3,7 +3,7 @@
  * @copyright    2018 - 2019 digitsensitive
  * @license      Digitsensitive
  */
-
+import BaseSound = Phaser.Sound.BaseSound;
 export class MainScene extends Phaser.Scene {
 
   public  gameBegin :boolean;
@@ -15,6 +15,7 @@ export class MainScene extends Phaser.Scene {
 
   private ballStartPos:Phaser.Geom.Point;
   private playerStartPos:Phaser.Geom.Point;
+  private sprite: Phaser.Physics.Arcade.Sprite;
 
   constructor() {
     super({
@@ -22,23 +23,21 @@ export class MainScene extends Phaser.Scene {
     });
   }
 
-
   preload(): void {
 
     this.load.spritesheet('tile', 'src/boilerplate/assets/tiles.png', { frameWidth: 60, frameHeight: 20 });
     this.load.image('player', './src/boilerplate/assets/player.png');
     this.load.image('ball', './src/boilerplate/assets/ball.png');
-
+    this.load.audio('bulp','./src/boilerplate/assets/bulp.wav');
   }
-
 
   create(): void {
     // @ts-ignore
     this.group = this.physics.add.staticGroup({
       key: 'tile',
-      frame: ['1','2','3','4','5','6','7'],
+      frame: ['1'],//,'2','3','4','5','6','7'
       frameQuantity: 1,
-      repeat: 11,
+      repeat: 1,
       randomFrame: true,
       gridAlign: {
         x: 70,
@@ -49,15 +48,13 @@ export class MainScene extends Phaser.Scene {
         cellHeight: 20
       }
     });
-
+    this.bricks = this.group.getChildren().length;
     this.speed = 10;
     this.total = 0;
 
     this.ballStartPos = new Phaser.Geom.Point(400,550-20);
     this.playerStartPos = new Phaser.Geom.Point(400,550);
 
-
-    //this.load.image("logo", "./src/boilerplate/assets/player.png");
     this.physics.world.setBoundsCollision(true,true,true,false);
     this.playerSprite = this.physics.add.sprite(this.playerStartPos.x, this.playerStartPos.y, "player").setImmovable();
     this.ballSprite =this.physics.add.sprite(   this.ballStartPos.x, this.ballStartPos.y, "ball").setCollideWorldBounds(true).setBounce(1);
@@ -81,7 +78,6 @@ export class MainScene extends Phaser.Scene {
         this.playerSprite.setX(pointer.x);
       }
 
-
     }, this);
 
     this.input.keyboard.on('keydown_SPACE', function (event) {
@@ -93,7 +89,6 @@ export class MainScene extends Phaser.Scene {
     },this );
 
   }
-
 
 
     hitPlayer(ball,player) : void {
@@ -124,12 +119,11 @@ export class MainScene extends Phaser.Scene {
       this.total++;
       if (this.total % 3 == 0) {
           this.speed +=5;
-      };
+      }
   };
 
-
   update(time: number, delta: number): void {
-    if(this.ballSprite.y>600)
+    if(this.ballSprite.y>600 || this.bricks == this.total)
     {
         this.restart();
 
@@ -142,6 +136,10 @@ export class MainScene extends Phaser.Scene {
     this.gameBegin = false;
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
     this.ballSprite.setPosition(this.ballStartPos.x, this.ballStartPos.y);
+    this.group.getChildren().forEach((element) => {
+        element.body.enable = true;
+        element.body.visible = true;
+    });
   }
 
 }
