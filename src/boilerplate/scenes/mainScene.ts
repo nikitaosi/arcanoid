@@ -13,8 +13,17 @@ export class MainScene extends Phaser.Scene {
   private speed: integer;
   private total: integer;
 
+
+  private scoreText : Phaser.GameObjects.Text;
+
+
+
+
+
+
   private ballStartPos:Phaser.Geom.Point;
   private playerStartPos:Phaser.Geom.Point;
+    private bestScoreText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -33,7 +42,7 @@ export class MainScene extends Phaser.Scene {
 
 
   create(): void {
-    // @ts-ignore
+      // @ts-ignore
     this.group = this.physics.add.staticGroup({
       key: 'tile',
       frame: ['1','2','3','4','5','6','7'],
@@ -55,6 +64,9 @@ export class MainScene extends Phaser.Scene {
 
     this.ballStartPos = new Phaser.Geom.Point(400,550-20);
     this.playerStartPos = new Phaser.Geom.Point(400,550);
+
+    this.scoreText = this.add.text(25, 25, 'score :'+this.total);
+
 
 
     //this.load.image("logo", "./src/boilerplate/assets/player.png");
@@ -122,6 +134,7 @@ export class MainScene extends Phaser.Scene {
   hitPlatform(ball,brick) : void {
       brick.destroy();
       this.total++;
+      this.scoreText.setText( 'score :'+this.total);
       if (this.total % 3 == 0) {
           this.speed +=5;
       };
@@ -138,6 +151,9 @@ export class MainScene extends Phaser.Scene {
 
   private restart()
   {
+
+
+
     this.ballSprite.setVelocity(0 ,0);
     this.gameBegin = false;
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
