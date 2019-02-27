@@ -24,6 +24,7 @@ export class MainScene extends Phaser.Scene {
   private ballStartPos:Phaser.Geom.Point;
   private playerStartPos:Phaser.Geom.Point;
     private bestScoreText: Phaser.GameObjects.Text;
+    private best: integer;
 
   constructor() {
     super({
@@ -61,12 +62,13 @@ export class MainScene extends Phaser.Scene {
 
     this.speed = 10;
     this.total = 0;
+    this.best = 0 ;
 
     this.ballStartPos = new Phaser.Geom.Point(400,550-20);
     this.playerStartPos = new Phaser.Geom.Point(400,550);
 
     this.scoreText = this.add.text(25, 25, 'score :'+this.total);
-
+    this.bestScoreText = this.add.text(150, 25, 'best :'+this.best);
 
 
     //this.load.image("logo", "./src/boilerplate/assets/player.png");
@@ -152,7 +154,14 @@ export class MainScene extends Phaser.Scene {
   private restart()
   {
 
+    if(this.best<this.total)
+    {
+        this.best = this.total;
+        this.bestScoreText.setText( 'best :'+this.best);
+    }
 
+    this.total = 0;
+    this.scoreText.setText( 'score :'+this.total);
 
     this.ballSprite.setVelocity(0 ,0);
     this.gameBegin = false;
