@@ -7,12 +7,14 @@
 export class MainScene extends Phaser.Scene {
 
   public  gameBegin :boolean;
-  private phaserSprite: Phaser.GameObjects.Sprite;
   private playerSprite:  Phaser.Physics.Arcade.Sprite;
   private ballSprite: Phaser.Physics.Arcade.Sprite;
   private group: Phaser.GameObjects.Group;
   private speed: integer;
   private total: integer;
+
+  private ballStartPos:Phaser.Geom.Point;
+  private playerStartPos:Phaser.Geom.Point;
 
   constructor() {
     super({
@@ -28,6 +30,7 @@ export class MainScene extends Phaser.Scene {
     this.load.image('ball', './src/boilerplate/assets/ball.png');
 
   }
+
 
   create(): void {
     // @ts-ignore
@@ -50,10 +53,14 @@ export class MainScene extends Phaser.Scene {
     this.speed = 10;
     this.total = 0;
 
+    this.ballStartPos = new Phaser.Geom.Point(400,550-20);
+    this.playerStartPos = new Phaser.Geom.Point(400,550);
+
+
     //this.load.image("logo", "./src/boilerplate/assets/player.png");
     this.physics.world.setBoundsCollision(true,true,true,false);
-    this.playerSprite = this.physics.add.sprite(400, 550, "player").setImmovable();
-    this.ballSprite =this.physics.add.sprite(400, 550-20, "ball").setCollideWorldBounds(true).setBounce(1);
+    this.playerSprite = this.physics.add.sprite(this.playerStartPos.x, this.playerStartPos.y, "player").setImmovable();
+    this.ballSprite =this.physics.add.sprite(   this.ballStartPos.x, this.ballStartPos.y, "ball").setCollideWorldBounds(true).setBounce(1);
 
     this.physics.add.collider(this.ballSprite,this.playerSprite,this.hitPlayer,null,this);
     this.physics.add.collider(this.ballSprite, this.group.getChildren(), this.hitPlatform,null,this);
@@ -89,11 +96,28 @@ export class MainScene extends Phaser.Scene {
 
 
 
-  hitPlayer(ball,player) : void {
+    hitPlayer(ball,player) : void {
 
+        var diff = 0;
+        if(ball.x>player.x)
+        {
 
+            diff = ball.x - player.x;
+            ball.setVelocityX(diff*10);//*speed);
 
-  };
+        }
+        else if(ball.x<player.x)
+        {
+
+            diff = player.x-ball.x;
+            ball.setVelocityX(diff*-10);//*speed);
+
+        }
+        else
+        {
+            ball.setVelocityX(Math.random()*8);//*speed
+        }
+    }
 
   hitPlatform(ball,brick) : void {
       brick.destroy();
@@ -104,5 +128,20 @@ export class MainScene extends Phaser.Scene {
   };
 
 
+  update(time: number, delta: number): void {
+    if(this.ballSprite.y>600)
+    {
+        this.restart();
+
+    }
+  }
+
+  private restart()
+  {
+    this.ballSprite.setVelocity(0 ,0);
+    this.gameBegin = false;
+    this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
+    this.ballSprite.setPosition(this.ballStartPos.x, this.ballStartPos.y);
+  }
 
 }
