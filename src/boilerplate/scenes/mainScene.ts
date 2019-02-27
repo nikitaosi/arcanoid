@@ -13,11 +13,28 @@ export class MainScene extends Phaser.Scene {
     });
   }
 
+  private group: Phaser.GameObjects.Group;
+
   preload(): void {
-    this.load.image("logo", "./src/boilerplate/assets/phaser.png");
+    this.load.spritesheet('tile', 'assets/sprites/tiles.png', { frameWidth: 60, frameHeight: 20 });
   }
 
   create(): void {
-    this.phaserSprite = this.add.sprite(400, 300, "logo");
+    // @ts-ignore
+    this.group = this.physics.add.staticGroup({
+      key: 'tile',
+      frame: ['1','2','3','4','5','6','7'],
+      frameQuantity: 1,
+      repeat: 11,
+      randomFrame: true,
+      gridAlign: {
+        x: 70,
+        y: 100,
+        width: 12,
+        height: 10,
+        cellWidth: 60,
+        cellHeight: 20
+      }
+    });
   }
 }
