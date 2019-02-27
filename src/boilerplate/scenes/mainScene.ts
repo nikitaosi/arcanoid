@@ -21,7 +21,7 @@ export class MainScene extends Phaser.Scene {
 
   preload(): void {
 
-    this.load.spritesheet('tile', 'assets/sprites/tiles.png', { frameWidth: 60, frameHeight: 20 });
+    this.load.spritesheet('tile', 'src/boilerplate/assets/tiles.png', { frameWidth: 60, frameHeight: 20 });
     this.load.image("player", "./src/boilerplate/assets/player.png");
     this.load.image("ball", "./src/boilerplate/assets/ball.png");
 
