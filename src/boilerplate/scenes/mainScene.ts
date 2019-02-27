@@ -3,6 +3,7 @@
  * @copyright    2018 - 2019 digitsensitive
  * @license      Digitsensitive
  */
+import Vector2 = Phaser.Math.Vector2;
 
 export class MainScene extends Phaser.Scene {
 
@@ -59,6 +60,9 @@ export class MainScene extends Phaser.Scene {
         cellHeight: 20
       }
     });
+
+
+
 
     this.speed = 10;
     this.total = 0;
@@ -117,19 +121,19 @@ export class MainScene extends Phaser.Scene {
         {
 
             diff = ball.x - player.x;
-            ball.setVelocityX(diff*10);//*speed);
+            ball.setVelocityX(diff*this.speed);//*speed);
 
         }
         else if(ball.x<player.x)
         {
 
             diff = player.x-ball.x;
-            ball.setVelocityX(diff*-10);//*speed);
+            ball.setVelocityX(diff*-this.speed);//*this.speed);
 
         }
         else
         {
-            ball.setVelocityX(Math.random()*8);//*speed
+            ball.setVelocityX(Math.random()*this.speed);//*speed
         }
     }
 
@@ -137,9 +141,23 @@ export class MainScene extends Phaser.Scene {
       brick.destroy();
       this.total++;
       this.scoreText.setText( 'score :'+this.total);
-      if (this.total % 3 == 0) {
+      if (this.total % 3  == 0) {
           this.speed +=5;
+          console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
+
+          //console.log(this.speed)
+
       };
+
+      ball.setVelocityX(100);
+
+      //var x = this.ballSprite.body.velocity.x;
+      //var y = this.ballSprite.body.velocity.y;
+
+
+      console.log(this.total);
+      console.log(this.speed);
+
   };
 
 
