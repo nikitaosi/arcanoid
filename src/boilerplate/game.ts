@@ -16,9 +16,6 @@ const config: GameConfig = {
   scene: MainScene,
   physics: {
     default: "arcade",
-    arcade: {
-      gravity: { y: 200 }
-    }
   }
 };
 
