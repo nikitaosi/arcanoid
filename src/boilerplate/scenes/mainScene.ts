@@ -9,8 +9,10 @@ export class MainScene extends Phaser.Scene {
   public  gameBegin :boolean;
   private phaserSprite: Phaser.GameObjects.Sprite;
   private playerSprite:  Phaser.Physics.Arcade.Sprite;
-  private ballSprite:  Phaser.Physics.Arcade.Sprite;
+  private ballSprite: Phaser.Physics.Arcade.Sprite;
   private group: Phaser.GameObjects.Group;
+  private speed: integer;
+  private total: integer;
 
   constructor() {
     super({
@@ -22,8 +24,8 @@ export class MainScene extends Phaser.Scene {
   preload(): void {
 
     this.load.spritesheet('tile', 'src/boilerplate/assets/tiles.png', { frameWidth: 60, frameHeight: 20 });
-    this.load.image("player", "./src/boilerplate/assets/player.png");
-    this.load.image("ball", "./src/boilerplate/assets/ball.png");
+    this.load.image('player', './src/boilerplate/assets/player.png');
+    this.load.image('ball', './src/boilerplate/assets/ball.png');
 
   }
 
@@ -45,13 +47,16 @@ export class MainScene extends Phaser.Scene {
       }
     });
 
+    this.speed = 10;
+    this.total = 0;
+
     //this.load.image("logo", "./src/boilerplate/assets/player.png");
     this.physics.world.setBoundsCollision(true,true,true,false);
     this.playerSprite = this.physics.add.sprite(400, 550, "player").setImmovable();
     this.ballSprite =this.physics.add.sprite(400, 550-20, "ball").setCollideWorldBounds(true).setBounce(1);
 
     this.physics.add.collider(this.ballSprite,this.playerSprite,this.hitPlayer,null,this);
-
+    this.physics.add.collider(this.ballSprite, this.group.getChildren(), this.hitPlatform,null,this);
 
 
     this.input.on('pointermove', function (pointer) {
@@ -77,7 +82,7 @@ export class MainScene extends Phaser.Scene {
       console.log('GAME BEGIN');
       // block.setVelocity(Phaser.Math.Between(200, 400), Phaser.Math.Between(200, 400));
       this.gameBegin = true;
-      this.ballSprite.setVelocity(-75,-300);
+      this.ballSprite.setVelocity(-75, -300);
     },this );
 
   }
@@ -88,7 +93,15 @@ export class MainScene extends Phaser.Scene {
 
 
 
-  }
+  };
+
+  hitPlatform(ball,brick) : void {
+      brick.destroy();
+      this.total++;
+      if (this.total % 3 == 0) {
+          this.speed +=5;
+      };
+  };
 
 
 
