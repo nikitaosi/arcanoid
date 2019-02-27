@@ -4,6 +4,8 @@
  * @license      Digitsensitive
  */
 import BaseSound = Phaser.Sound.BaseSound;
+import Vector2 = Phaser.Math.Vector2;
+
 export class MainScene extends Phaser.Scene {
 
   public  gameBegin :boolean;
@@ -15,9 +17,19 @@ export class MainScene extends Phaser.Scene {
   private bricks: integer;
   private hit: BaseSound;
 
+
+  private scoreText : Phaser.GameObjects.Text;
+
+
+
+
+
+
   private ballStartPos:Phaser.Geom.Point;
   private playerStartPos:Phaser.Geom.Point;
   private sprite: Phaser.Physics.Arcade.Sprite;
+    private bestScoreText: Phaser.GameObjects.Text;
+    private best: integer;
 
   constructor() {
     super({
@@ -37,9 +49,9 @@ export class MainScene extends Phaser.Scene {
     // @ts-ignore
     this.group = this.physics.add.staticGroup({
       key: 'tile',
-      frame: ['1'],//,'2','3','4','5','6','7'
+      frame: ['1','2','3','4','5','6','7'],
       frameQuantity: 1,
-      repeat: 1,
+      repeat: 11,
       randomFrame: true,
       gridAlign: {
         x: 70,
@@ -55,9 +67,16 @@ export class MainScene extends Phaser.Scene {
     this.total = 0;
     this.hit = this.sound.add('bulp');
     console.log(this.group);
+    this.best = 0 ;
+
     this.ballStartPos = new Phaser.Geom.Point(400,550-20);
     this.playerStartPos = new Phaser.Geom.Point(400,550);
 
+    this.scoreText = this.add.text(25, 25, 'score :'+this.total);
+    this.bestScoreText = this.add.text(150, 25, 'best :'+this.best);
+
+
+    //this.load.image("logo", "./src/boilerplate/assets/player.png");
     this.physics.world.setBoundsCollision(true,true,true,false);
     this.playerSprite = this.physics.add.sprite(this.playerStartPos.x, this.playerStartPos.y, "player").setImmovable();
     this.ballSprite =this.physics.add.sprite(   this.ballStartPos.x, this.ballStartPos.y, "ball").setCollideWorldBounds(true).setBounce(1);
@@ -101,19 +120,19 @@ export class MainScene extends Phaser.Scene {
         {
 
             diff = ball.x - player.x;
-            ball.setVelocityX(diff*10);//*speed);
+            ball.setVelocityX(diff*this.speed);//*speed);
 
         }
         else if(ball.x<player.x)
         {
 
             diff = player.x-ball.x;
-            ball.setVelocityX(diff*-10);//*speed);
+            ball.setVelocityX(diff*-this.speed);//*this.speed);
 
         }
         else
         {
-            ball.setVelocityX(Math.random()*8);//*speed
+            ball.setVelocityX(Math.random()*this.speed);//*speed
         }
     }
 
@@ -121,9 +140,24 @@ export class MainScene extends Phaser.Scene {
       brick.disableBody(true, true);
       this.hit.play();
       this.total++;
-      if (this.total % 3 == 0) {
+      this.scoreText.setText( 'score :'+this.total);
+      if (this.total % 3  == 0) {
           this.speed +=5;
-      }
+          console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
+
+          //console.log(this.speed)
+
+      };
+
+      //ball.setVelocityX(100);
+
+      //var x = this.ballSprite.body.velocity.x;
+      //var y = this.ballSprite.body.velocity.y;
+
+
+      console.log(this.total);
+      console.log(this.speed);
+
   };
 
   update(time: number, delta: number): void {
@@ -136,6 +170,16 @@ export class MainScene extends Phaser.Scene {
 
   private restart()
   {
+
+    if(this.best<this.total)
+    {
+        this.best = this.total;
+        this.bestScoreText.setText( 'best :'+this.best);
+    }
+
+    this.total = 0;
+    this.scoreText.setText( 'score :'+this.total);
+
     this.ballSprite.setVelocity(0 ,0);
     this.gameBegin = false;
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
