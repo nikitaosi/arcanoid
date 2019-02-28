@@ -17,13 +17,7 @@ export class MainScene extends Phaser.Scene {
   private bricks: integer;
   private hit: BaseSound;
 
-
   private scoreText : Phaser.GameObjects.Text;
-
-
-
-
-
 
   private ballStartPos:Phaser.Geom.Point;
   private playerStartPos:Phaser.Geom.Point;
@@ -46,12 +40,11 @@ export class MainScene extends Phaser.Scene {
   }
 
   create(): void {
-    // @ts-ignore
     this.group = this.physics.add.staticGroup({
       key: 'tile',
       frame: ['1','2','3','4','5','6','7'],
       frameQuantity: 1,
-      repeat: 11,
+      repeat: 0 ,
       randomFrame: true,
       gridAlign: {
         x: 70,
@@ -141,7 +134,7 @@ export class MainScene extends Phaser.Scene {
       this.hit.play();
       this.total++;
       this.scoreText.setText( 'score :'+this.total);
-      if (this.total % 3  == 0) {
+      if (this.total % 3 == 0) {
           this.speed +=5;
           console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
 
@@ -184,9 +177,8 @@ export class MainScene extends Phaser.Scene {
     this.gameBegin = false;
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
     this.ballSprite.setPosition(this.ballStartPos.x, this.ballStartPos.y);
-    this.group.getChildren().forEach((element) => {
-        element.body.enable = true;
-        element.body.visible = true;
+    this.group.children.each(function (brick) {
+        brick.enableBody(false, 0, 0, true, true);
     });
   }
 
