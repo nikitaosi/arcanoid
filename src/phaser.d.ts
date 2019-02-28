@@ -1544,7 +1544,7 @@ declare type GroupCreateConfig = {
     /**
      * The texture frame of each new Game Object.
      */
-    frame?: string | integer;
+    frame?: string | integer | integer[];
     /**
      * The visible state of each new Game Object.
      */

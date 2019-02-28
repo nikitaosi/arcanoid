@@ -5,13 +5,13 @@
  */
 import BaseSound = Phaser.Sound.BaseSound;
 import Vector2 = Phaser.Math.Vector2;
-
+import "phaser";
 export class MainScene extends Phaser.Scene {
 
   public  gameBegin :boolean;
   private playerSprite:  Phaser.Physics.Arcade.Sprite;
   private ballSprite: Phaser.Physics.Arcade.Sprite;
-  private group: Phaser.GameObjects.Group;
+  private group: Phaser.Physics.Arcade.StaticGroup;
   private speed: integer;
   private total: integer;
   private bricks: integer;
@@ -24,6 +24,24 @@ export class MainScene extends Phaser.Scene {
   private sprite: Phaser.Physics.Arcade.Sprite;
     private bestScoreText: Phaser.GameObjects.Text;
     private best: integer;
+
+
+
+    private config : GroupCreateConfig = {
+        key: 'tile',
+        frame: [1,2,3,4,5,6,7],
+        frameQuantity: 1,
+        repeat: 11 ,
+        randomFrame: true,
+        gridAlign: {
+            x: 70,
+            y: 100,
+            width: 12,
+            height: 10,
+            cellWidth: 60,
+            cellHeight: 20
+        }
+    }
 
   constructor() {
     super({
@@ -40,21 +58,11 @@ export class MainScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.group = this.physics.add.staticGroup({
-      key: 'tile',
-      frame: ['1','2','3','4','5','6','7'],
-      frameQuantity: 1,
-      repeat: 0 ,
-      randomFrame: true,
-      gridAlign: {
-        x: 70,
-        y: 100,
-        width: 12,
-        height: 10,
-        cellWidth: 60,
-        cellHeight: 20
-      }
-    });
+
+       // this.make.group();
+
+
+        this.group = this.physics.add.staticGroup(this.config);
     this.bricks = this.group.getChildren().length;
     this.speed = 10;
     this.total = 0;
@@ -134,8 +142,8 @@ export class MainScene extends Phaser.Scene {
       this.hit.play();
       this.total++;
       this.scoreText.setText( 'score :'+this.total);
-      if (this.total % 3 == 0) {
-          this.speed +=5;
+      if (this.total % 10 == 0) {
+          this.speed +=1;
           console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
 
           //console.log(this.speed)
@@ -172,13 +180,37 @@ export class MainScene extends Phaser.Scene {
 
     this.total = 0;
     this.scoreText.setText( 'score :'+this.total);
+    this.speed = 1;
+
 
     this.ballSprite.setVelocity(0 ,0);
     this.gameBegin = false;
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
     this.ballSprite.setPosition(this.ballStartPos.x, this.ballStartPos.y);
     this.group.children.each(function (brick) {
-        brick.enableBody(false, 0, 0, true, true);
+
+        if(brick instanceof Phaser.Physics.Arcade.Sprite)
+        {
+            console.log("arcade sprite");
+        }
+        else
+        {
+            console.log("   ");
+        }
+
+        var bbrick = <Phaser.Physics.Arcade.Sprite> brick;
+
+        if(bbrick instanceof Phaser.Physics.Arcade.Sprite)
+        {
+            console.log("arcade sprite bbrick");
+        }
+        else
+        {
+            console.log("   ");
+        }
+
+
+        bbrick.enableBody(false, 0, 0, true, true);
     });
   }
 
