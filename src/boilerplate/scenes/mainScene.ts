@@ -61,13 +61,12 @@ export class MainScene extends Phaser.Scene {
 
        // this.make.group();
 
-
-        this.group = this.physics.add.staticGroup(this.config);
+        this.group = this.physics.add.staticGroup(this.config,);
     this.bricks = this.group.getChildren().length;
     this.speed = 10;
     this.total = 0;
     this.hit = this.sound.add('bulp');
-    console.log(this.group);
+   // console.log(this.group);
     this.best = 0 ;
 
     this.ballStartPos = new Phaser.Geom.Point(400,550-20);
@@ -105,7 +104,7 @@ export class MainScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown_SPACE', function (event) {
 
-      console.log('GAME BEGIN');
+     // console.log('GAME BEGIN');
       // block.setVelocity(Phaser.Math.Between(200, 400), Phaser.Math.Between(200, 400));
       this.gameBegin = true;
       this.ballSprite.setVelocity(-75, -300);
@@ -121,19 +120,19 @@ export class MainScene extends Phaser.Scene {
         {
 
             diff = ball.x - player.x;
-            ball.setVelocityX(diff*this.speed);//*speed);
+            ball.setVelocityX(diff*10);//*speed);
 
         }
         else if(ball.x<player.x)
         {
 
             diff = player.x-ball.x;
-            ball.setVelocityX(diff*-this.speed);//*this.speed);
+            ball.setVelocityX(diff*-10);//*this.speed);
 
         }
         else
         {
-            ball.setVelocityX(Math.random()*this.speed);//*speed
+            ball.setVelocityX(Math.random()*10);//*speed
         }
     }
 
@@ -142,9 +141,9 @@ export class MainScene extends Phaser.Scene {
       this.hit.play();
       this.total++;
       this.scoreText.setText( 'score :'+this.total);
-      if (this.total % 10 == 0) {
-          this.speed +=1;
-          console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
+      if (this.total % 3 == 0) {
+        // this.speed +=1;
+        //  console.log(this.ballSprite.body.velocity.multiply(new Phaser.Math.Vector2(1.05,1.05)));
 
           //console.log(this.speed)
 
@@ -156,8 +155,8 @@ export class MainScene extends Phaser.Scene {
       //var y = this.ballSprite.body.velocity.y;
 
 
-      console.log(this.total);
-      console.log(this.speed);
+      //console.log(this.total);
+      //console.log(this.speed);
 
   };
 
@@ -188,30 +187,12 @@ export class MainScene extends Phaser.Scene {
     this.playerSprite.setPosition(this.playerStartPos.x, this.playerStartPos.y);
     this.ballSprite.setPosition(this.ballStartPos.x, this.ballStartPos.y);
     this.group.children.each(function (brick) {
-
-        if(brick instanceof Phaser.Physics.Arcade.Sprite)
-        {
-            console.log("arcade sprite");
-        }
-        else
-        {
-            console.log("   ");
-        }
-
         var bbrick = <Phaser.Physics.Arcade.Sprite> brick;
-
-        if(bbrick instanceof Phaser.Physics.Arcade.Sprite)
-        {
-            console.log("arcade sprite bbrick");
-        }
-        else
-        {
-            console.log("   ");
-        }
-
-
         bbrick.enableBody(false, 0, 0, true, true);
+
+
+
+
     });
   }
-
 }
